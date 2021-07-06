@@ -41,3 +41,13 @@ function renderAxes1(XScale1, xAxis1) {
     return xAxis1
 }
 
+function renderCircles1(circlesGroup1, XScale1, initialXAxis) {
+    circlesGroup1.transition()
+    .duration(1000)
+    .attr("cx", d => XScale1(d[initialXAxis]));
+
+    return circlesGroup1;
+}
+
+
+
