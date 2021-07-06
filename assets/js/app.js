@@ -49,5 +49,36 @@ function renderCircles1(circlesGroup1, XScale1, initialXAxis) {
     return circlesGroup1;
 }
 
+function ToolTip1(initialXAxis, circlesGroup1) {
+    var label;
 
+    if (initialXAxis === "poverty") {
+        label = "In Poverty(%)";
+    }
+    else if (xAxis1 === "age") {
+        label = "Age (Median)";
+    }
+    else {
+        label = "Household Income (Median)";
+    }
+
+    var toolTip = d3.tip()
+    .attr("class", "tooltip")
+    .offset([80, -60])
+    .html(function(d){
+        return(`State variable, obesity variable, poverty variable`)
+    });
+
+    circlesGroup1.call(toolTip);
+
+    circlesGroup1.on("mouseover", function(data){
+        toolTip.show(data);
+    })
+        .on("mouseout", function(data, index){
+            toolTip.hide(data);
+        });
+    return circlesGroup1;
+}
+
+//start with importing all data and see if it populates correctly
 
