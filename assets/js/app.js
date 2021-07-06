@@ -9,3 +9,12 @@ var margin = {
     bottom: 80,
     left: 100
 };
+
+var width = svgWidth - margin.left - margin.right;
+var height = svgHeight - margin.top - margin.bottom;
+
+var svg = d3.select(".chart")
+    .append("svg")
+    .attr("width",svgWidth)
+    .attr("height", svgHeight);
+
