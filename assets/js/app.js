@@ -23,3 +23,21 @@ var chartGroup = svg.append("g")
 
 var initialXAxis = "poverty";
 
+function scale1(data, initialXAxis) {
+    var xLinearScale = d3.scaleLinear()
+        .domain([d3.min(data, d=> d[initialXAxis])*0.8,
+        d3.max(data, d => d[initialXAxis]) * 1.2
+    ])
+    .range([0,width]);
+}
+
+function renderAxes1(XScale1, xAxis1) {
+    var bottomAxis = d3.axisBottom(XScale1);
+
+    xAxis1.transition()
+    .duration(1000)
+    .call(bottomAxis);
+
+    return xAxis1
+}
+
