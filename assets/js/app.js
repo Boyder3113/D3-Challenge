@@ -102,4 +102,27 @@ d3.csv("data.csv").then(function(data1,err){
 
     var bottomAxis = d3.axisBottom(xLinearScale);
     var leftAxis = d3.axisLeft(yLinearScale);
+
+    var xAxis1 = chartGroup.append("g")
+    .classed("x-axis", true)
+    .attr("transform", `translate(0, ${height})`)
+    .call(bottomAxis);
+
+    chartGroup.append("g")
+    .call(leftAxis);
+
+    var circlesGroup1 = chartGroup.selectAll("circle")
+    .data(data1)
+    .enter()
+    .append("circle")
+    .attr("cx", d => xLinearScale(d[initialXAxis]))
+    .attr("cy", d => yLinearScale(d.healthcare))
+    .attr("r",20)
+    .attr("fill", "blue")
+    .attr("opacity", ".5");
+
+    var labelsGroup = chartGroup.append("g")
+    .attr("transform",`translate(${width/2}, ${height + 20})`):
+
+    
 })
