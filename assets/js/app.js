@@ -124,5 +124,46 @@ d3.csv("data.csv").then(function(data1,err){
     var labelsGroup = chartGroup.append("g")
     .attr("transform",`translate(${width/2}, ${height + 20})`):
 
-    
+    var povertyLabel = labelsGroup.append("text")
+    .attr("x", 0)
+    .attr("y", 20)
+    .attr("value", "poverty")
+    .classed("active", true)
+    .text("In Poverty(%)");
+
+    var ageLabel = labelsGroup.append("text")
+    .attr("x", 0)
+    .attr("y", 40)
+    .attr("value", "age")
+    .classed("inactive", true)
+    .text("Age(Median)");
+
+    chartGroup.append("text")
+    .attr("transform", "rotate(-90")
+    .attr("y", 0 - margin.left)
+    .attr("x", 0 - (height/2))
+    .attr("dy", "1em")
+    .classed("axis-text", true)
+    .text("Lacks Healthcare (%)")
+
+    var circlesGroup1 = updateToolTip(initialXAxis, circlesGroup1)
+
+    labelsGroup.selectAll("text")
+    .on("click", function(){
+
+        var value = d3.select(this).attr("value");
+        if (value !== initialXAxis){
+            initialXAxis = value;
+            
+            xLinearScale = XScale1(data1, initialXAxis);
+
+            xAxis1 = renderAxes1(xLinearScale, xAxis1);
+
+            circlesGroup1 = renderCircles1(circlesGroup1, xLinearScale, initialXAxis);
+
+            circlesGroup1 = updateToolTip(initialXAxis, circlesGroup1);
+
+            
+        }
+    })
 })
