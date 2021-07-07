@@ -23,10 +23,10 @@ var chartGroup = svg.append("g")
 
 var initialXAxis = "poverty";
 
-function scale1(data, initialXAxis) {
+function scale1(data1, initialXAxis) {
     var xLinearScale = d3.scaleLinear()
-        .domain([d3.min(data, d=> d[initialXAxis])*0.8,
-        d3.max(data, d => d[initialXAxis]) * 1.2
+        .domain([d3.min(data1, d=> d[initialXAxis])*0.8,
+        d3.max(data1, d => d[initialXAxis]) * 1.2
     ])
     .range([0,width]);
 }
@@ -71,14 +71,26 @@ function ToolTip1(initialXAxis, circlesGroup1) {
 
     circlesGroup1.call(toolTip);
 
-    circlesGroup1.on("mouseover", function(data){
-        toolTip.show(data);
+    circlesGroup1.on("mouseover", function(data1){
+        toolTip.show(data1);
     })
-        .on("mouseout", function(data, index){
-            toolTip.hide(data);
+        .on("mouseout", function(data1, index){
+            toolTip.hide(data1);
         });
     return circlesGroup1;
 }
 
 //start with importing all data and see if it populates correctly
 
+d3.csv("data.csv").then(function(data1,err){
+    if (err) throw err;
+
+    data1.foreach(function(data){
+        data.poverty = +data.poverty;
+        data.healthcare = +data.healthcare;
+        data.age = +data.low;
+        data.smokes = +data.smokes;
+        data.income = +data.income;
+        data.obesity = +data.obesity
+    })
+})
