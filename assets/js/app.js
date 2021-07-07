@@ -92,5 +92,14 @@ d3.csv("data.csv").then(function(data1,err){
         data.smokes = +data.smokes;
         data.income = +data.income;
         data.obesity = +data.obesity
-    })
+    });
+
+    var xLinearScale = XScale1(data1, initialXAxis);
+
+    var yLinearScale = d3.scaleLinear()
+    .domain([0, d3.max(data1, d => d.healthcare)])
+    .range([height,0]);
+
+    var bottomAxis = d3.axisBottom(xLinearScale);
+    var leftAxis = d3.axisLeft(yLinearScale);
 })
