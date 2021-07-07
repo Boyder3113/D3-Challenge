@@ -163,7 +163,24 @@ d3.csv("data.csv").then(function(data1,err){
 
             circlesGroup1 = updateToolTip(initialXAxis, circlesGroup1);
 
-            
+            if (initialXAxis === "age") {
+                ageLabel
+                    .classed("active", true)
+                    .classed("inactive", false);
+                povertyLabel
+                    .classed("active", false)
+                    .classed("inacitve", true);
+            }
+            else {
+                ageLabel
+                    .classed("active", false)
+                    .classed("inactive", true);
+                povertyLabel
+                    .classed("active", true)
+                    .classed("inactive", false);
+            }
         }
-    })
-})
+    });
+}).catch(function(error){
+    console.log(error);
+});
