@@ -13,7 +13,7 @@ var margin = {
 var width = svgWidth - margin.left - margin.right;
 var height = svgHeight - margin.top - margin.bottom;
 
-var svg = d3.select(".chart")
+var svg = d3.select("#scatter")
     .append("svg")
     .attr("width",svgWidth)
     .attr("height", svgHeight);
@@ -24,7 +24,7 @@ var chartGroup = svg.append("g")
 var initialXAxis = "poverty";
 
 function scale1(data1, initialXAxis) {
-    var xLinearScale = d3.scaleLinear()
+     return d3.scaleLinear()
         .domain([d3.min(data1, d=> d[initialXAxis])*0.8,
         d3.max(data1, d => d[initialXAxis]) * 1.2
     ])
@@ -63,10 +63,13 @@ function ToolTip1(initialXAxis, circlesGroup1) {
     }
 
     var toolTip = d3.tip()
-    .attr("class", "tooltip")
-    .offset([80, -60])
+    .attr("class", "d3-tooltip")
+    .offset([30, -60])
     .html(function(d){
-        return(`State variable, obesity variable, poverty variable`)
+        var pov = "<div> "+ d.poverty + " </div>"
+        var state = "<div> "+ d.state + " </div>"
+        var obe = "<div> "+ d.obesity + " </div>"
+        return state + pov + obe;
     });
 
     circlesGroup1.call(toolTip);
@@ -80,12 +83,21 @@ function ToolTip1(initialXAxis, circlesGroup1) {
     return circlesGroup1;
 }
 
+var toolTip = d3.tip()
+    .attr("class", "d3-tooltip")
+    .offset([30, -60])
+    .html(function(d){
+        var pov = "<div> "+ d.poverty + " </div>"
+        var state = "<div> "+ d.state + " </div>"
+        var obe = "<div> "+ d.obesity + " </div>"
+        return state + pov + obe;
+    });
 //start with importing all data and see if it populates correctly
 
-d3.csv("data.csv").then(function(data1,err){
+d3.csv("data.csv").then(function(data,err){
     if (err) throw err;
 
-    data1.foreach(function(data){
+    data.forEach(function(data){
         data.poverty = +data.poverty;
         data.healthcare = +data.healthcare;
         data.age = +data.low;
@@ -94,10 +106,10 @@ d3.csv("data.csv").then(function(data1,err){
         data.obesity = +data.obesity
     });
 
-    var xLinearScale = XScale1(data1, initialXAxis);
+    var xLinearScale = scale1(data, initialXAxis);
 
     var yLinearScale = d3.scaleLinear()
-    .domain([0, d3.max(data1, d => d.healthcare)])
+    .domain([0, d3.max(data, d => d.healthcare)])
     .range([height,0]);
 
     var bottomAxis = d3.axisBottom(xLinearScale);
@@ -111,18 +123,20 @@ d3.csv("data.csv").then(function(data1,err){
     chartGroup.append("g")
     .call(leftAxis);
 
-    var circlesGroup1 = chartGroup.selectAll("circle")
-    .data(data1)
+    var circlesGroup1 = chartGroup.selectAll("g theCircles")
+    .data(data)
     .enter()
     .append("circle")
     .attr("cx", d => xLinearScale(d[initialXAxis]))
     .attr("cy", d => yLinearScale(d.healthcare))
     .attr("r",20)
     .attr("fill", "blue")
-    .attr("opacity", ".5");
+    .attr("opacity", ".5")
+    .on("mouseover", function(d){toolTip.show(d)})
+    .on("mouseout", function(d){toolTip.hide(d)});
 
     var labelsGroup = chartGroup.append("g")
-    .attr("transform",`translate(${width/2}, ${height + 20})`):
+    .attr("transform",`translate(${width/2}, ${height + 20})`);
 
     var povertyLabel = labelsGroup.append("text")
     .attr("x", 0)
@@ -139,14 +153,14 @@ d3.csv("data.csv").then(function(data1,err){
     .text("Age(Median)");
 
     chartGroup.append("text")
-    .attr("transform", "rotate(-90")
+    .attr("transform", "rotate(-90)")
     .attr("y", 0 - margin.left)
     .attr("x", 0 - (height/2))
     .attr("dy", "1em")
     .classed("axis-text", true)
-    .text("Lacks Healthcare (%)")
+    .text("Lacks Healthcare (%)");
 
-    var circlesGroup1 = updateToolTip(initialXAxis, circlesGroup1)
+    var circlesGroup1 = ToolTip1(initialXAxis, circlesGroup1);
 
     labelsGroup.selectAll("text")
     .on("click", function(){
@@ -155,13 +169,13 @@ d3.csv("data.csv").then(function(data1,err){
         if (value !== initialXAxis){
             initialXAxis = value;
             
-            xLinearScale = XScale1(data1, initialXAxis);
+            xLinearScale = scale1(data1, initialXAxis);
 
             xAxis1 = renderAxes1(xLinearScale, xAxis1);
 
             circlesGroup1 = renderCircles1(circlesGroup1, xLinearScale, initialXAxis);
 
-            circlesGroup1 = updateToolTip(initialXAxis, circlesGroup1);
+            //circlesGroup1 = ToolTip1(initialXAxis, svg);
 
             if (initialXAxis === "age") {
                 ageLabel
@@ -181,6 +195,6 @@ d3.csv("data.csv").then(function(data1,err){
             }
         }
     });
-}).catch(function(error){
-    console.log(error);
+}).catch(function(err){
+    console.log(err);
 });
